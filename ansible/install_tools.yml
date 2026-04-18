@@ -1,0 +1,25 @@
+- name: Configuration serveur DevOps
+  hosts: ansible
+  become: yes
+
+  tasks:
+    - name: Installer Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Installer curl
+      yum:
+        name: curl
+        state: present
+
+    - name: Installer unzip
+      yum:
+        name: unzip
+        state: present
+
+    - name: Activer Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
