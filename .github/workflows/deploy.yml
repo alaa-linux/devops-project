@@ -26,6 +26,11 @@ jobs:
         working-directory: ./frontend
         run: npm run lint
 
+      - name: Scan sécurité du code (Semgrep)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/default"
+
       - name: Build frontend
         working-directory: ./frontend
         run: npm run build
