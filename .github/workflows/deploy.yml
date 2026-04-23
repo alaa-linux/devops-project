@@ -31,6 +31,15 @@ jobs:
         with:
           config: "p/default"
 
+      - name: Scan dépendances et filesystem (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          severity: 'HIGH,CRITICAL'
+
       - name: Build frontend
         working-directory: ./frontend
         run: npm run build
