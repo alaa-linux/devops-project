@@ -191,6 +191,8 @@ resource "aws_eks_cluster" "infoline_eks" {
   name     = "infoline-eks-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
 
+  enabled_cluster_log_types = ["api", "audit"]
+
   vpc_config {
     subnet_ids = [
       aws_subnet.public_subnet_1.id,
@@ -208,8 +210,7 @@ resource "aws_eks_cluster" "infoline_eks" {
     Name = "infoline-eks-cluster"
   }
 }
-
-
+  
 resource "aws_iam_role" "eks_node_role" {
   name = "eks-node-group-role"
 
