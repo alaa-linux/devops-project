@@ -68,22 +68,29 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build image backend
+      - name: Définir le tag des images Docker
+        run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Build image backend sécurisé
         run: |
-          docker build -t backend-node-app ./backend
-          docker tag backend-node-app:latest 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:latest
+          docker build -t backend-node-app:${IMAGE_TAG} ./backend
+          docker tag backend-node-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:${IMAGE_TAG}
+          docker tag backend-node-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:latest
 
       - name: Push image backend
         run: |
+          docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:${IMAGE_TAG}
           docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:latest
 
-      - name: Build image frontend
+      - name: Build image frontend sécurisé
         run: |
-          docker build -t frontend-react-app ./frontend
-          docker tag frontend-react-app:latest 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:latest
+          docker build -t frontend-react-app:${IMAGE_TAG} ./frontend
+          docker tag frontend-react-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:${IMAGE_TAG}
+          docker tag frontend-react-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:latest
 
       - name: Push image frontend
         run: |
+          docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:${IMAGE_TAG}
           docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:latest
 
       - name: Mettre à jour kubeconfig pour EKS
