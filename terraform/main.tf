@@ -253,8 +253,8 @@ resource "aws_eks_node_group" "infoline_nodes" {
   ]
 
   scaling_config {
-    desired_size = 2
-    max_size     = 2
+    desired_size = 3
+    max_size     = 3
     min_size     = 1
   }
 
@@ -288,6 +288,8 @@ resource "aws_instance" "ansible_server" {
 resource "aws_ecr_repository" "backend_repo" {
   name = "backend-node-app"
 
+  image_tag_mutability = "IMMUTABLE"
+
   image_scanning_configuration {
     scan_on_push = true
   }
@@ -299,6 +301,8 @@ resource "aws_ecr_repository" "backend_repo" {
 
 resource "aws_ecr_repository" "frontend_repo" {
   name = "frontend-react-app"
+
+  image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
