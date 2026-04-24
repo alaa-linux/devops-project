@@ -6,7 +6,7 @@ function App() {
   const [status, setStatus] = useState('')
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/message`)
+    fetch("http://a187f425ee1534a6194d491d722487d2-902497893.eu-west-3.elb.amazonaws.com:3000/api/message")
       .then((response) => response.json())
       .then((data) => {
         setMessage(data.message)
