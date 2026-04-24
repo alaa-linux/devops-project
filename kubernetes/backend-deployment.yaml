@@ -17,6 +17,13 @@ spec:
           image: 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:latest
           ports:
             - containerPort: 3000
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi" 
 ---
 apiVersion: v1
 kind: Service
