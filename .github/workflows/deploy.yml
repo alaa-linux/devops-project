@@ -120,7 +120,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-     - name: Déployer sur Kubernetes
+      - name: Déployer sur Kubernetes
        run: |
          kubectl apply -f kubernetes/namespace.yaml
          kubectl apply -f kubernetes/
