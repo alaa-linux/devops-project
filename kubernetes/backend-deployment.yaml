@@ -12,9 +12,13 @@ spec:
       labels:
         app: backend-node
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
         - name: backend-node
           image: 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:latest
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 3000
           resources:
