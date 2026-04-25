@@ -10,7 +10,7 @@ COPY . .
 
 RUN chown -R node:node /app
 
-USER node
+USER 1000
 
 EXPOSE 3000
 
