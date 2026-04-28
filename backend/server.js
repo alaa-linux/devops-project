@@ -10,10 +10,12 @@ app.use(cors());
 client.collectDefaultMetrics();
 
 app.get('/', (req, res) => {
+  console.log('GET / appelé');
   res.send('Backend Node.js / Express opérationnel');
 });
 
 app.get('/api/message', (req, res) => {
+  console.log('GET /api/message appelé');
   res.json({
     message: 'Bonjour depuis le backend Node.js / Express',
     status: 'success'
