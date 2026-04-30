@@ -1,0 +1,33 @@
+env:
+  contexts:
+  - excludePaths: []
+    name: baseline
+    urls:
+    - http://a68a608dd1ef843adac2eef129c0c5dd-1645291400.eu-west-3.elb.amazonaws.com
+  parameters:
+    failOnError: true
+    progressToStdout: false
+jobs:
+- parameters:
+    enableTags: false
+    maxAlertsPerRule: 10
+  type: passiveScan-config
+- parameters:
+    maxDuration: 1
+    url: http://a68a608dd1ef843adac2eef129c0c5dd-1645291400.eu-west-3.elb.amazonaws.com
+  type: spider
+- parameters:
+    maxDuration: 0
+  type: passiveScan-wait
+- parameters:
+    format: Long
+    summaryFile: /home/zap/zap_out.json
+  rules: []
+  type: outputSummary
+- parameters:
+    reportDescription: ''
+    reportDir: /zap/wrk/
+    reportFile: zap-report-apres.html
+    reportTitle: ZAP Scanning Report
+    template: traditional-html
+  type: report
