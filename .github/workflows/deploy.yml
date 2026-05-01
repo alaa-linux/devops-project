@@ -50,6 +50,10 @@ jobs:
           command: test
           args: --file=frontend/package.json --severity-threshold=high
 
+      - name: Installer les dépendances backend
+        working-directory: ./backend
+        run: npm install
+
       - name: Scan SCA backend avec Snyk
         uses: snyk/actions/node@master
         continue-on-error: true
