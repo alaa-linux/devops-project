@@ -41,6 +41,25 @@ jobs:
           exit-code: '1'
           severity: 'HIGH,CRITICAL'
 
+      - name: Scan SCA frontend avec Snyk
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --file=frontend/package.json --severity-threshold=high
+
+      - name: Scan SCA backend avec Snyk
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --file=backend/package.json --severity-threshold=high
+
+
       - name: Scan Terraform (Checkov)
         uses: bridgecrewio/checkov-action@master
         with:
