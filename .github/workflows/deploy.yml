@@ -63,7 +63,6 @@ jobs:
           command: test
           args: --file=backend/package.json --severity-threshold=high
 
-
       - name: Scan Terraform (Checkov)
         uses: bridgecrewio/checkov-action@master
         with:
@@ -74,10 +73,6 @@ jobs:
       - name: Build frontend
         working-directory: ./frontend
         run: npm run build
-
-      - name: Installer les dépendances backend
-        working-directory: ./backend
-        run: npm install
 
   build-and-push:
     runs-on: ubuntu-latest
@@ -95,7 +90,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Connexion à Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Définir le tag des images Docker
@@ -105,7 +99,6 @@ jobs:
         run: |
           docker build -t backend-node-app:${IMAGE_TAG} ./backend
           docker tag backend-node-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:${IMAGE_TAG}
-          docker tag backend-node-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:latest
 
       - name: Scan image backend (Trivy)
         uses: aquasecurity/trivy-action@master
@@ -118,13 +111,11 @@ jobs:
       - name: Push image backend
         run: |
           docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:${IMAGE_TAG}
-          docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:latest
 
       - name: Build image frontend sécurisé
         run: |
           docker build -t frontend-react-app:${IMAGE_TAG} ./frontend
           docker tag frontend-react-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:${IMAGE_TAG}
-          docker tag frontend-react-app:${IMAGE_TAG} 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:latest
 
       - name: Scan image frontend (Trivy)
         uses: aquasecurity/trivy-action@master
@@ -137,15 +128,21 @@ jobs:
       - name: Push image frontend
         run: |
           docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:${IMAGE_TAG}
-          docker push 377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:latest
 
       - name: Mettre à jour kubeconfig pour EKS
         run: |
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-      - name: Déployer sur Kubernetes
+      - name: Mettre à jour les images Kubernetes avec le tag immuable
         run: |
-         kubectl apply -f kubernetes/
+          kubectl set image deployment/backend-deployment backend-node=377152274560.dkr.ecr.eu-west-3.amazonaws.com/backend-node-app:${IMAGE_TAG}
+          kubectl set image deployment/frontend-deployment frontend-react=377152274560.dkr.ecr.eu-west-3.amazonaws.com/frontend-react-app:${IMAGE_TAG}
+
+      - name: Vérifier le déploiement Kubernetes
+        run: |
+          kubectl rollout status deployment/backend-deployment
+          kubectl rollout status deployment/frontend-deployment
+          kubectl get pods
 
       - name: Attendre la disponibilité du frontend
         run: |
