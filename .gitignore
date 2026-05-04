@@ -14,3 +14,7 @@ node_modules/
 
 # Env
 .env
+
+# Terraform backups
+terraform/backups/
+*.backup*
