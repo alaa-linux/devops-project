@@ -1,28 +1,31 @@
-DevOps Project — Plateforme Cloud Native DevSecOps sur AWS EKS
+# DevOps Project — Plateforme Cloud Native DevSecOps sur AWS EKS
 
+---
 
-
-
-Présentation du projet
+# Présentation du projet
 
 Ce projet est une plateforme complète DevOps / DevSecOps déployée sur AWS avec Kubernetes (Amazon EKS).
 
 L’objectif du projet était de construire une infrastructure cloud moderne et sécurisée intégrant :
 
-Infrastructure as Code avec Terraform
-Déploiement Kubernetes sur Amazon EKS
-CI/CD automatisé avec GitHub Actions
-Sécurité DevSecOps complète
-Monitoring et observabilité
-Runtime Security
-Service Mesh / Zero Trust
-Logging centralisé
-Backend Terraform sécurisé
-Architecture modulaire Terraform
+- Infrastructure as Code avec Terraform
+- Déploiement Kubernetes sur Amazon EKS
+- CI/CD automatisé avec GitHub Actions
+- Sécurité DevSecOps complète
+- Monitoring et observabilité
+- Runtime Security
+- Service Mesh / Zero Trust
+- Logging centralisé
+- Backend Terraform sécurisé
+- Architecture modulaire Terraform
 
 Le projet a été entièrement réalisé, sécurisé, monitoré et debuggé dans un environnement AWS réel.
 
-Architecture globale
+---
+
+# Architecture globale
+
+```text
 Développeur
     │
     ▼
@@ -173,15 +176,11 @@ Structure du projet
 Étapes principales réalisées
 1. Déploiement Infrastructure AWS
 Terraform
-
-Commandes principales :
-
+Commandes principales
 terraform init
 terraform plan
 terraform apply
-
-Infrastructure créée :
-
+Infrastructure créée
 VPC AWS
 Subnets publics / privés
 Security Groups
@@ -190,16 +189,12 @@ EKS Cluster
 Node Groups
 ECR
 2. Déploiement Kubernetes
-
-Commandes principales :
-
+Commandes principales
 kubectl get nodes
 kubectl get pods -A
 kubectl apply -f
 kubectl rollout restart deployment
-
-Déploiement :
-
+Déploiement
 Frontend React
 Backend Node.js
 Services Kubernetes
@@ -214,189 +209,121 @@ Push ECR
 Déploiement EKS
 Scans sécurité
 4. Modularisation Terraform
-
-Réorganisation de Terraform :
-
+Réorganisation Terraform
 modules/
 ├── network/
 ├── security/
 ├── eks/
 ├── compute/
 └── ecr/
-
-Migration du state sans destruction :
-
+Migration du state sans destruction
 terraform state mv
-
-Validation :
-
+Validation
 terraform plan
-
-Résultat :
-
+Résultat
 No changes. Your infrastructure matches the configuration.
 5. Backend Terraform sécurisé
 AWS S3 + DynamoDB
-
-Mise en place :
-
+Mise en place
 bucket S3
 versioning
 chiffrement AES256
 DynamoDB locking
-
-Commandes :
-
+Commandes
 aws s3api create-bucket
 aws dynamodb create-table
 terraform init
 6. Logging centralisé
 Loki + Promtail + Grafana
-
-Fonctionnalités :
-
+Fonctionnalités
 centralisation logs Kubernetes
 LogQL
 dashboards Grafana
 logs backend Node.js
-
-Commande exemple :
-
+Commande exemple
 kubectl logs deployment/backend-deployment
-
-Requête LogQL :
-
+Requête LogQL
 {job="default/backend-node"}
 7. OPA Gatekeeper — Policy as Code
-
-Règle implémentée :
-
+Règle implémentée
 interdiction des images Docker :latest
-
-Test :
-
+Test
 kubectl run test-latest --image=nginx:latest --restart=Never
-
-Résultat :
-
+Résultat
 denied by Gatekeeper
 8. Falco — Runtime Security
 
 Détection temps réel des comportements suspects.
 
-Test effectué :
-
+Test effectué
 kubectl exec -it falco-test -- sh
-
-Résultat Falco :
-
+Résultat Falco
 A shell was spawned in a container
 9. Istio — Zero Trust / mTLS
-
-Fonctionnalités :
-
+Fonctionnalités
 injection sidecar
 mTLS
 Service Mesh
 Zero Trust
-
-Validation :
-
+Validation
 frontend 2/2 Running
 backend  2/2 Running
 10. OWASP ZAP — DAST
-
-Scan automatisé DAST :
-
+Scan automatisé DAST
 docker run --rm -t \
   ghcr.io/zaproxy/zaproxy:stable \
   zap-baseline.py
-
-Résultats sécurité :
-
-Avant :
-
+Résultats sécurité
+Avant
 WARN : 9
-
-Après correction :
-
+Après correction
 WARN : 3
 FAIL : 0
 Principaux problèmes rencontrés
 Kubernetes Scheduling
-
-Erreur :
-
+Erreur
 Too many pods
 Insufficient memory
-
-Cause :
-
+Cause
 saturation cluster EKS
 nodes t3.micro limités
-
-Solution :
-
+Solution
 augmentation nombre de nodes Terraform
 optimisation scheduling
 nodeSelector
 labels Kubernetes
 Loki Pending
-
-Cause :
-
+Cause
 problème NodeAffinity
 labels absents
-
-Solution :
-
+Solution
 kubectl label node
 Promtail ne collectait plus les logs
-
-Cause :
-
+Cause
 backend et promtail sur nodes différents
-
-Solution :
-
+Solution
 déplacement labels log-node=true
 redémarrage backend
 OPA bloquait Istio
-
-Erreur :
-
+Erreur
 Image tag latest interdit
-
-Cause :
-
+Cause
 règle OPA active
-
-Solution :
-
+Solution
 suppression temporaire contrainte OPA
 migration images immuables
 Erreur ECR immutable images
-
-Erreur :
-
+Erreur
 The image tag 'latest' already exists
-
-Cause :
-
+Cause
 ECR en mode IMMUTABLE
 utilisation latest
-
-Solution :
-
+Solution
 IMAGE_TAG=${GITHUB_SHA::7}
 Istio mTLS STRICT bloquait ELB
-
-Cause :
-
+Cause
 ELB AWS hors mesh Istio
-
-Solution :
-
+Solution
 STRICT -> PERMISSIVE
 Compétences démontrées
 DevOps
@@ -425,10 +352,10 @@ Service Mesh debugging
 Infrastructure debugging
 Runtime debugging
 Documentation complète
-Guide Technique
-Architecture
-Sécurité
-Troubleshooting
+TECHNICAL_GUIDE.md
+ARCHITECTURE.md
+SECURITY.md
+TROUBLESHOOTING.md
 Conclusion
 
 Ce projet représente une plateforme Cloud Native DevSecOps complète déployée sur AWS avec Kubernetes.
